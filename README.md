@@ -37,7 +37,7 @@ O projeto está organizado em uma estrutura padrão e limpa para jogos web:
   * `bg.jpg` - A imagem de fundo atmosférica que compõe o cenário do duelo.
   * `sfx/` - Contém uma variedade de efeitos sonoros dinâmicos de ataques e impactos (`punch1.wav` a `punch5.mp3`) que são acionados durante o combate.
 
-## 🛠️ Tecnologias Utilizadas
+##  Tecnologias Utilizadas
 * **HTML5 Canvas:** Para renderizar o mundo do jogo, fundos e personagens.
 * **JavaScript (Vanilla):** Controla o *loop* principal do jogo, o estado, a reprodução de áudio e a detecção de colisões.
 * **CSS3:** Para a estilização e formatação contínua da interface.
