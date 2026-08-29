@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shadow Duel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div id="wrap">
+    <canvas id="game" width="800" height="450"></canvas>
+    <div id="hud" style="display:none;">
+      <div class="bar-wrap">
+        <div class="name" id="p1name">VOCÊ</div>
+        <div class="hp-outer">
+          <div class="hp-inner" id="hp1"></div>
+        </div>
+      </div>
+      <div class="bar-wrap right">
+        <div class="name" id="p2name">SOMBRA</div>
+        <div class="hp-outer">
+          <div class="hp-inner" id="hp2"></div>
+        </div>
+      </div>
+    </div>
+    <div id="round-msg" class="hidden"></div>
+
+    <!-- CUTSCENE DO DRAGÃO -->
+    <div id="bossCutscene" class="overlay hidden">
+      <div class="cutscene-box">
+        <div class="cutscene-kicker">TEMPLO DAS SOMBRAS</div>
+        <h2 id="cutsceneTitle">O GUARDIÃO</h2>
+        <div class="cutscene-portraits" id="cutscenePortraits">
+          <div class="portrait-card" id="portraitSamurai">
+            <div class="portrait-face samurai-face">
+              <div class="samurai-hat"></div>
+              <div class="samurai-head"></div>
+              <div class="samurai-eye eye-a"></div>
+              <div class="samurai-eye eye-b"></div>
+            </div>
+            <div class="portrait-name">SAMURAI</div>
+          </div>
+          <div class="portrait-card" id="portraitDragon">
+            <div class="portrait-face dragon-face">
+              <div class="dragon-horns"></div>
+              <div class="dragon-head"></div>
+              <div class="dragon-eye eye-a"></div>
+              <div class="dragon-eye eye-b"></div>
+              <div class="dragon-whisker whisker-a"></div>
+              <div class="dragon-whisker whisker-b"></div>
+            </div>
+            <div class="portrait-name">DRAGÃO</div>
+          </div>
+        </div>
+        <div id="cutsceneSpeaker" class="cutscene-speaker"></div>
+        <div id="cutsceneText" class="cutscene-text"></div>
+        <div class="cutscene-actions">
+          <button class="menu-btn" id="cutsceneNextBtn">Continuar</button>
+        </div>
+        <div class="cutscene-progress" id="cutsceneProgress">1 / 7</div>
+      </div>
+    </div>
+
+    <!-- MENU DE PAUSA -->
+    <div id="pauseOverlay" class="overlay hidden">
+      <div class="pause-box">
+        <div class="cutscene-kicker">JOGO PAUSADO</div>
+        <h2>SHADOW DUEL</h2>
+        <div class="pause-hint">Pressione ESC para continuar</div>
+        <button class="menu-btn" id="resumeBtn">Continuar</button>
+        <button class="menu-btn secondary" id="pauseMenuBtn">Voltar ao menu</button>
+      </div>
+    </div>
+    <div id="survivalBadge" class="hidden">RODADA <span id="survivalRoundNum">1</span>/10</div>
+
+    <!-- MENU PRINCIPAL -->
+    <div id="menu" class="screen">
+      <h1 class="title">SHADOW DUEL</h1>
+      <div class="subtitle">a glória samurai</div>
+      <button class="menu-btn" id="playBtn">Jogar</button>
+      <button class="menu-btn secondary" id="survivalBtn">
+        Sobrevivência <span class="btn-tag">10 rodadas</span>
+      </button>
+      <button class="menu-btn secondary" id="openDifficultyBtn">
+        Dificuldade <span class="btn-tag" id="currentDiffLabel">Média</span>
+      </button>
+      <button class="menu-btn secondary" id="openWeaponsBtn">
+        Armas <span class="btn-tag" id="menuCoinDisplay">🪙 0</span>
+      </button>
+      <button class="menu-btn secondary" id="openSkillsBtn">
+        Habilidades <span class="btn-tag" id="menuCoinDisplaySkills">🪙 0</span>
+      </button>
+      <div class="controls-box">
+        <b>Controles</b><br><br>
+        <span class="key">A</span> andar para trás &nbsp;&nbsp;
+        <span class="key">D</span> andar para frente<br>
+        <span class="key">W</span> pular &nbsp;&nbsp;
+        <span class="key">S</span> agachar<br>
+        <span class="key">ESPAÇO</span> atacar corpo a corpo &nbsp;&nbsp;
+        <span class="key">F</span> chutar<br>
+        <span class="key">R</span> arremessar Shuriken &nbsp;&nbsp;
+        <span class="key">ESC</span> pausar / voltar ao menu
+      </div>
+    </div>
+
+    <!-- MENU DE DIFICULDADE -->
+    <div id="difficultyMenu" class="screen hidden">
+      <h1 class="title small">Dificuldade</h1>
+      <div class="subtitle">escolha o nível da sombra adversária</div>
+      <div class="diff-list" id="diffList">
+        <button class="diff-card" data-diff="facil">
+          <div class="diff-card-name">FÁCIL</div>
+          <div class="diff-card-desc">Sombra mais lenta e menos agressiva</div>
+          <div class="diff-card-reward">Recompensa: 🪙 10</div>
+        </button>
+        <button class="diff-card" data-diff="medio">
+          <div class="diff-card-name">MÉDIO</div>
+          <div class="diff-card-desc">Equilíbrio entre ataque e defesa</div>
+          <div class="diff-card-reward">Recompensa: 🪙 20</div>
+        </button>
+        <button class="diff-card" data-diff="dificil">
+          <div class="diff-card-name">DIFÍCIL</div>
+          <div class="diff-card-desc">Sombra rápida, agressiva e mais forte</div>
+          <div class="diff-card-reward">Recompensa: 🪙 30</div>
+        </button>
+        <button class="diff-card boss" data-diff="boss">
+          <div class="diff-card-name">BOSS</div>
+          <div class="diff-card-desc">Um dragão que cospe rajadas de bolas de fogo e fica exausto (vulnerável) entre
+            elas</div>
+          <div class="diff-card-reward">Recompensa: 🪙 60</div>
+        </button>
+      </div>
+      <button class="menu-btn back-btn" id="backFromDiff">Voltar</button>
+    </div>
+
+    <!-- MENU DE ARMAS -->
+    <div id="weaponsMenu" class="screen hidden">
+      <h1 class="title small">Armas</h1>
+      <div class="subtitle">
+        <span id="coinDisplay">🪙 0</span>
+      </div>
+      <div class="weapon-list" id="weaponList"></div>
+      <button class="menu-btn back-btn" id="backFromWeapons">Voltar</button>
+    </div>
+
+    <!-- MENU DE HABILIDADES -->
+    <div id="skillsMenu" class="screen hidden">
+      <h1 class="title small">Habilidades</h1>
+      <div class="subtitle">
+        <span id="skillCoinDisplay">🪙 0</span>
+      </div>
+      <div class="weapon-list" id="skillList"></div>
+      <button class="menu-btn back-btn" id="backFromSkills">Voltar</button>
+    </div>
+
+    <!-- GAME OVER -->
+    <div id="gameover" class="screen hidden">
+      <div class="result" id="resultText">VITÓRIA</div>
+      <div class="coin-reward hidden" id="coinReward"></div>
+      <button class="menu-btn" id="restartBtn">Jogar novamente</button>
+      <button class="menu-btn" id="menuBtn"
+        style="background:transparent;border-color:#7a6a9a;color:#b9a8d9;">Menu</button>
+    </div>
+  </div>
+  <script src="game.js"></script>
+</body>
+
+</html>
